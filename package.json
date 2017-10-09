@@ -1,0 +1,27 @@
+{
+  "name": "content-scrapper",
+  "version": "1.0.0",
+  "description": "shirts4mike web scrapper using node.js",
+  "main": "scrapper.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EdgarSpickerman/content-scrapper.git"
+  },
+  "keywords": [
+    "web-scrapper",
+    "shirts4mike",
+    "content",
+    "node.js",
+    "cheerio",
+    "json2csv"
+  ],
+  "author": "Edgar Spickerman Jr",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EdgarSpickerman/content-scrapper/issues"
+  },
+  "homepage": "https://github.com/EdgarSpickerman/content-scrapper#readme"
+}
