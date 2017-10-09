@@ -52,8 +52,12 @@ function print(shirts) {
         });
     }
 }
-
+function error(e) {
+    fs.appendFile('./scraper-error.log', new Date()+' '+e, (err) => {
+        if (err) throw err;
+    });
+}
 scrapeUrl('http://www.shirts4mike.com/shirts.php')
     .then(getLinks)
     .then(getInfo)
-    .catch(() => console.log('There was an error'));
+    .catch((e) => error(e));
