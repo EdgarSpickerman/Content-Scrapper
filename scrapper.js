@@ -1,43 +1,59 @@
 const http = require('http');
+const fs = require('fs');
 const cheerio = require('cheerio');
 const json2csv = require('json2csv');
-const fs = requrie('fs');
-const baseUrl = http://www.shirts4mike.com/;
+fs.stat("./data", err => err ? fs.mkdir("./data") : '');
 
-function scrape(url) {
-    return new Promise(resolve => {
+function scrapeUrl(url) {
+    return new Promise((resolve, reject) => {
         const request = http.get(url, res => {
-            let body = ''
-            res.on('data', () => body += data.toString);
+            let body = '';
+            res.on('data', data => body += data.toString());
             res.on('end', () => resolve(body));
         });
-        request.on('error', () => console.log('There’s been a 404 error. Cannot connect to the to http://shirts4mike.com.'));
+        request.on('error', () => console.log("There's been a 404 error. Cannot connect to the to http://shirts4mike.com."));
     });
-} //function returns a promise with the value of the specifed url html
+}
 
 function getLinks(body) {
     let links = [];
     let $ = cheerio.load(body);
     for (let i = 0; i < $('ul.products li a').length; i++) {
-        links[i]=baseUrl+$('ul.products li a').eq(i).attr('href');
+        links[i] = 'http://www.shirts4mike.com/' + $('ul.products li a ').eq(i).attr('href');
     }
     return links;
-} //function takes the value of the specifed url and parses the value for all shirt links and returns the array as a value;
+}
 
-function getAllInfo(array) {
+function getInfo(links) {
     let shirts = [];
-    for (let i = 0; i < array.length; i++) {
-        scrape(array[i]).then(body => {
+    for (let i = 0; i < links.length; i++) {
+        scrapeUrl(links[i]).then(body => {
+            let $ = cheerio.load(body);
             let shirt = {};
-            shirt.price = '';
-            shirt.title = '';
-            shirt.imgUrl = '';
-            shirt.url = array[i];
+            shirt.title = $('.shirt-details h1').text().slice(4);
+            shirt.price = $('.price').text();
+            shirt.imgUrl = 'http://www.shirts4mike.com/' + $('.shirt-picture span img').attr('src');
+            shirt.url = links[i];
+            shirt.date = new Date().toLocaleString();
+            shirts.push(shirt);
+            return shirts;
+        }).then(print);
+    }
+}
+
+function print(shirts) {
+    let fields = ['title', 'price', 'imgUrl', 'url', 'date'];
+    let csv = json2csv({ data: shirts, fields: fields });
+    if (shirts.length >= 8) {
+        let fileName = new Date().toLocaleDateString().replace(/\//g, '-');
+        fs.writeFile('./data/' + fileName + '.csv', csv, (err) => {
+            if (err) throw err;
+            console.log('file saved');
         });
     }
 }
 
-scrape('http://www.shirts4mike.com/shirts.php')
+scrapeUrl('http://www.shirts4mike.com/shirts.php')
     .then(getLinks)
-    .then(getAllInfo)
-    .catch((e) => console.log(e));
+    .then(getInfo)
+    .catch(() => console.log('There was an error'));
