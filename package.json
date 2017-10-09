@@ -4,7 +4,8 @@
   "description": "shirts4mike web scrapper using node.js",
   "main": "scrapper.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node scrapper.js"
   },
   "repository": {
     "type": "git",
