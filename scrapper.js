@@ -17,7 +17,10 @@ function scrapeUrl(url) {
             res.on('data', data => body += data.toString());
             res.on('end', () => resolve(body));
         });
-        request.on('error', () => console.log("There's been a 404 error. Cannot connect to the to http://shirts4mike.com."));
+        request.on('error', err => {
+            console.log("There's been a 404 error. Cannot connect to the to http://shirts4mike.com.")
+            error(err);
+        });
         request.once('response', res => path=request.path);
     });
 }
