@@ -71,6 +71,7 @@ function print(shirts) {
     let fields = ['title', 'price', 'imgUrl', 'url', 'date'];
     let csv = json2csv({ data: shirts, fields: fields });
     let fileName = new Date().toLocaleDateString().replace(/\//g, '-');
+    fileName = fileName.slice(6, 10) + '-' + fileName.slice(0, 5);
     fs.writeFile('./data/' + fileName + '.csv', csv, err => {
         if (err) throw err;
         console.log('file saved');
